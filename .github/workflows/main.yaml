@@ -24,7 +24,9 @@ jobs:
       - name: Setup cahce
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          mkdir ${{ env.cacheName }}
+          if [ ! -e ${{ env.cacheName }} ]; then
+            mkdir ${{ env.cacheName }}
+          fi
           cd ${{ env.cacheName }}
           touch ${{ github.run_id }}
           ls -la
