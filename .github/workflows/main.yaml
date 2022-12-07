@@ -68,6 +68,7 @@ jobs:
         run: |
           echo "addRunId[${{ inputs.addRunId }}]"
           ## 
+          cd ${{ env.cacheName }}
           ls -la
           set 
           ## 
