@@ -1,0 +1,39 @@
+on:
+  push:
+    branches:    
+      - main
+
+env:
+  cacheName: my-cache
+
+jobs:
+  helloWorld:
+    runs-on: ubuntu-latest
+    name: Run Greeting
+    steps:
+      ## ---------------------------------------------------
+      - name: Init Cache
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.cacheName }}
+          key: ${{ env.cacheName }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ env.cacheName }}
+      ## ---------------------------------------------------
+      - name: Setup cahce
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir ${{ env.cacheName }}
+          cd ${{ env.cacheName }}
+          touch ${{ github.run_id }}
+          ls -la
+      ## ---------------------------------------------------
+      - name: Run greeting
+        id: hello
+        uses: davekpatrick/action-learn-helloworld@main
+        with:
+          greetingType: 'Hello'
+      # Use the output from the action
+      - name: Print greeting
+        run: echo "${{ steps.hello.outputs.greetingMessage }}"
