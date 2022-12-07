@@ -14,7 +14,7 @@ on:
 env:
   cacheName: my-cache
   cacheFile: run.log
-  cacheKey: format( '**/{0}/{1}', env.cacheName, env.cacheFile )
+  cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
 #
 jobs:
   preparation:
