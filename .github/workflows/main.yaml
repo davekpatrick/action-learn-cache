@@ -19,12 +19,12 @@ jobs:
   preparation:
     runs-on: ubuntu-latest
     name: Workflow preparation
+    env:
+      cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
     steps:
       ## ---------------------------------------------------
       - name: Init Cache
         id: cache
-        env:
-         cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
         # src: 
         uses: actions/cache@v3
         with:
@@ -51,18 +51,18 @@ jobs:
       ## ---------------------------------------------------
       - name: Debug
         run: |
-          ls -la
+          ls -laR
           set
   construction:
     runs-on: ubuntu-latest
     needs: preparation
     name: Artifact construction
+    env:
+      cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
     steps:
       ## ---------------------------------------------------
       - name: Init Cache
         id: cache
-        env:
-         cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
         # src: 
         uses: actions/cache@v3
         with:
@@ -83,18 +83,18 @@ jobs:
       ## ---------------------------------------------------
       - name: Debug
         run: |
-          ls -la
+          ls -laR
           set
   testing:
     runs-on: ubuntu-latest
     needs: construction
     name: Artifact testing
+    env:
+      cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
     steps:
       ## ---------------------------------------------------
       - name: Init Cache
         id: cache
-        env:
-         cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
         # src: 
         uses: actions/cache@v3
         with:
