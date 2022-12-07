@@ -28,15 +28,16 @@ jobs:
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
-      - name: Setup cahce
+      - name: Setup cache
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
+          echo "cache-hit[${{ steps.cache.outputs.cache-hit }}]"
           if [ ! -e ${{ env.cacheName }} ]; then
             mkdir ${{ env.cacheName }}
           fi
           cd ${{ env.cacheName }}
           echo "addRunId[${{ inputs.addRunId }}]"
-          if [ "${{ inputs.addRunId }}" = "true" ]; then 
+          if [ "${{ inputs.addRunId }}" = 'true' ]; then 
             touch ${{ github.run_id }}
           fi
           ls -la
