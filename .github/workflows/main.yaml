@@ -30,8 +30,7 @@ jobs:
         with:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
-          #key: ${{ env.cacheName }}-${{ github.run_id }}
-          key: ${{ env.cacheName }}-${{ hashFiles( '**/run.log' ) }}
+          key: ${{ env.cacheName }}-${{ github.run_id }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -57,8 +56,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: preparation
     name: Artifact construction
-    env:
-      cacheKey: '**/run.log'
     steps:
       ## ---------------------------------------------------
       - name: Init Cache
@@ -68,8 +65,7 @@ jobs:
         with:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
-          #key: ${{ env.cacheName }}-${{ github.run_id }}
-          key: ${{ env.cacheName }}-${{ hashFiles( '**/run.log' ) }}
+          key: ${{ env.cacheName }}-${{ github.run_id }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -82,6 +78,15 @@ jobs:
           cat ${{ env.cacheFile }}
           ##
       ## ---------------------------------------------------
+      - name: Test Cache
+        id: testCache
+        # src: 
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.cacheName }}
+          # Note: The cache is immutable and cannot be updated once created.
+          key: ${{ env.cacheName }}-${{ hashFiles( '**/run.log' ) }}
+      ## ---------------------------------------------------
       - name: Debug
         run: |
           ls -laR
@@ -90,8 +95,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: construction
     name: Artifact testing
-    env:
-      cacheKey: '**/run.log'
     steps:
       ## ---------------------------------------------------
       - name: Init Cache
