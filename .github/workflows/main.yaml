@@ -36,7 +36,7 @@ jobs:
           fi
           cd ${{ env.cacheName }}
           echo "addRunId[${{ inputs.addRunId }}]"
-          if [ ${{ inputs.addRunId }} -eq 1 ]; then 
+          if [ "${{ inputs.addRunId }}" = "true" ]; then 
             touch ${{ github.run_id }}
           fi
           ls -la
