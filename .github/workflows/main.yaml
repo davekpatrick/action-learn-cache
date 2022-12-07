@@ -12,16 +12,17 @@ on:
          default: true
 #
 env:
-  cacheName: my-cache
+  cacheName: src
   cacheFile: run.log
+  cacheHashFiles: '**/src/**'
 #
 jobs:
   preparation:
     runs-on: ubuntu-latest
     name: Workflow preparation
-    env:
-      cacheKey: '**/run.log'
     steps:
+      ## ---------------------------------------------------
+      - uses: actions/checkout@v3
       ## ---------------------------------------------------
       - name: Init Cache
         id: cache
@@ -30,7 +31,7 @@ jobs:
         with:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
-          key: ${{ env.cacheName }}-${{ github.run_id }}
+          key: ${{ env.cacheName }}-${{ hashFiles( env.cacheHashFiles ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -58,6 +59,8 @@ jobs:
     name: Artifact construction
     steps:
       ## ---------------------------------------------------
+      - uses: actions/checkout@v3
+      ## ---------------------------------------------------
       - name: Init Cache
         id: cache
         # src: 
@@ -65,11 +68,11 @@ jobs:
         with:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
-          key: ${{ env.cacheName }}-${{ github.run_id }}
+          key: ${{ env.cacheName }}-${{ hashFiles( env.cacheHashFiles ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
-      - name: Test cache
+      - name: Build it
         run: |
           echo "addRunId[${{ inputs.addRunId }}]"
           ## 
@@ -77,15 +80,6 @@ jobs:
           echo runID:[${{ github.run_id }}][construction] >> ${{ env.cacheFile }}
           cat ${{ env.cacheFile }}
           ##
-      ## ---------------------------------------------------
-      - name: Test Cache
-        id: testCache
-        # src: 
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.cacheName }}
-          # Note: The cache is immutable and cannot be updated once created.
-          key: ${{ env.cacheName }}-${{ hashFiles( '**/run.log' ) }}
       ## ---------------------------------------------------
       - name: Debug
         run: |
@@ -97,6 +91,8 @@ jobs:
     name: Artifact testing
     steps:
       ## ---------------------------------------------------
+      - uses: actions/checkout@v3
+      ## ---------------------------------------------------
       - name: Init Cache
         id: cache
         # src: 
@@ -104,10 +100,18 @@ jobs:
         with:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
-          #key: ${{ env.cacheName }}-${{ github.run_id }}
-          key: ${{ env.cacheName }}-${{ hashFiles( '**/run.log' ) }}
+          key: ${{ env.cacheName }}-${{ hashFiles( env.cacheHashFiles ) }}
           restore-keys: |
             ${{ env.cacheName }}
+      ## ---------------------------------------------------
+      - name: Test cache
+        run: |
+          echo "addRunId[${{ inputs.addRunId }}]"
+          ## 
+          cd ${{ env.cacheName }}
+          echo runID:[${{ github.run_id }}][testing] >> ${{ env.cacheFile }}
+          cat ${{ env.cacheFile }}
+          ## 
       ## ---------------------------------------------------
       - name: Run greeting
         id: hello
@@ -118,12 +122,3 @@ jobs:
       # Use the output from the action
       - name: Print greeting
         run: echo "${{ steps.hello.outputs.greetingMessage }}"
-      ## ---------------------------------------------------
-      - name: Test cache
-        run: |
-          echo "addRunId[${{ inputs.addRunId }}]"
-          ## 
-          cd ${{ env.cacheName }}
-          echo runID:[${{ github.run_id }}][testing] >> ${{ env.cacheFile }}
-          cat ${{ env.cacheFile }}
-          ## 
