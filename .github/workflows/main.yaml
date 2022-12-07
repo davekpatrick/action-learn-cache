@@ -13,6 +13,7 @@ on:
 #
 env:
   cacheName: my-cache
+  cacheFile: run.log
 #
 jobs:
   preparation:
@@ -28,8 +29,7 @@ jobs:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
           #key: ${{ env.cacheName }}-${{ github.run_id }}
-          #key: ${{ env.cacheName }}-${{ hashFiles( format( '{0}/**', env.cacheName ) ) }}
-          key: ${{ env.cacheName }}-${{ hashFiles( '**/my-cache/**' ) }}
+          key: ${{ env.cacheName }}-${{ hashFiles( format( '**/{0}/{1}', env.cacheName, env.cacheFile ) ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -45,7 +45,7 @@ jobs:
           if [ "${{ inputs.addRunId }}" = 'true' ]; then 
             touch ${{ github.run_id }}
           fi
-          echo runID:[${{ github.run_id }}][preparation] >> run.log
+          echo runID:[${{ github.run_id }}][preparation] >> ${{ env.cacheFile }}
           ## 
           ls -la
           set 
@@ -64,7 +64,7 @@ jobs:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
           #key: ${{ env.cacheName }}-${{ github.run_id }}
-          key: ${{ env.cacheName }}-${{ hashFiles( '**/my-cache/**' ) }}
+          key: ${{ env.cacheName }}-${{ hashFiles( format( '**/{0}/{1}', env.cacheName, env.cacheFile ) ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -73,7 +73,7 @@ jobs:
           echo "addRunId[${{ inputs.addRunId }}]"
           ## 
           cd ${{ env.cacheName }}
-          cat run.log
+          cat ${{ env.cacheFile }}
           ls -la
           set 
           ## 
@@ -91,7 +91,7 @@ jobs:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
           #key: ${{ env.cacheName }}-${{ github.run_id }}
-          key: ${{ env.cacheName }}-${{ hashFiles( '**/my-cache/**' ) }}
+          key: ${{ env.cacheName }}-${{ hashFiles( format( '**/{0}/{1}', env.cacheName, env.cacheFile ) ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -110,6 +110,6 @@ jobs:
           echo "addRunId[${{ inputs.addRunId }}]"
           ## 
           cd ${{ env.cacheName }}
-          echo runID:[${{ github.run_id }}][testing] >> run.log
-          cat run.log
+          echo runID:[${{ github.run_id }}][testing] >> ${{ env.cacheFile }}
+          cat ${{ env.cacheFile }}
           ## 
