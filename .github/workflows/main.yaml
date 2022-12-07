@@ -46,21 +46,23 @@ jobs:
           ## 
           ls -la
           set 
-          ## 
-      ## ---------------------------------------------------
-      - name: Run greeting
-        id: hello
-        uses: davekpatrick/action-learn-helloworld@main
-        with:
-          greetingType: 'Hello'
-      # Use the output from the action
-      - name: Print greeting
-        run: echo "${{ steps.hello.outputs.greetingMessage }}"
+          ##
   construction:
     runs-on: ubuntu-latest
     needs: preparation
     name: Artifact construction
     steps:
+      ## ---------------------------------------------------
+      - name: Init Cache
+        id: cache
+        # src: 
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.cacheName }}
+          # Note: The cache is immutable and cannot be updated once created.
+          key: ${{ env.cacheName }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ env.cacheName }}
       ## ---------------------------------------------------
       - name: Test cache
         run: |
@@ -74,6 +76,17 @@ jobs:
     needs: construction
     name: Artifact testing
     steps:
+      ## ---------------------------------------------------
+      - name: Init Cache
+        id: cache
+        # src: 
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.cacheName }}
+          # Note: The cache is immutable and cannot be updated once created.
+          key: ${{ env.cacheName }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ env.cacheName }}
       ## ---------------------------------------------------
       - name: Run greeting
         id: hello
