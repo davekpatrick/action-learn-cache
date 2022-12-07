@@ -14,7 +14,6 @@ on:
 env:
   cacheName: my-cache
   cacheFile: run.log
-  cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
 #
 jobs:
   preparation:
@@ -24,6 +23,8 @@ jobs:
       ## ---------------------------------------------------
       - name: Init Cache
         id: cache
+        env:
+         cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
         # src: 
         uses: actions/cache@v3
         with:
@@ -60,6 +61,8 @@ jobs:
       ## ---------------------------------------------------
       - name: Init Cache
         id: cache
+        env:
+         cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
         # src: 
         uses: actions/cache@v3
         with:
@@ -90,6 +93,8 @@ jobs:
       ## ---------------------------------------------------
       - name: Init Cache
         id: cache
+        env:
+         cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
         # src: 
         uses: actions/cache@v3
         with:
