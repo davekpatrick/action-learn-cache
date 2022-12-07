@@ -21,9 +21,11 @@ jobs:
       ## ---------------------------------------------------
       - name: Init Cache
         id: cache
+        # src: 
         uses: actions/cache@v3
         with:
           path: ${{ env.cacheName }}
+          # Note: The cache is immutable and cannot be updated once created.
           key: ${{ env.cacheName }}-${{ github.run_id }}
           restore-keys: |
             ${{ env.cacheName }}
@@ -40,7 +42,10 @@ jobs:
           if [ "${{ inputs.addRunId }}" = 'true' ]; then 
             touch ${{ github.run_id }}
           fi
+          ## 
           ls -la
+          set 
+          ## 
       ## ---------------------------------------------------
       - name: Run greeting
         id: hello
