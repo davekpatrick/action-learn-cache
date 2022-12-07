@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Workflow preparation
     env:
-      cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
+      cacheKey: '**/my-cache/run.log'
     steps:
       ## ---------------------------------------------------
       - name: Init Cache
@@ -58,7 +58,7 @@ jobs:
     needs: preparation
     name: Artifact construction
     env:
-      cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
+      cacheKey: '**/my-cache/run.log'
     steps:
       ## ---------------------------------------------------
       - name: Init Cache
@@ -90,7 +90,7 @@ jobs:
     needs: construction
     name: Artifact testing
     env:
-      cacheKey: ${{ format( '**/{0}/{1}', env.cacheName, env.cacheFile ) }}
+      cacheKey: '**/my-cache/run.log'
     steps:
       ## ---------------------------------------------------
       - name: Init Cache
