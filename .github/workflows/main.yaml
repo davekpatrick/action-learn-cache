@@ -31,7 +31,7 @@ jobs:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
           #key: ${{ env.cacheName }}-${{ github.run_id }}
-          key: ${{ env.cacheName }}-${{ hashFiles( env.cacheKey ) }}
+          key: ${{ env.cacheName }}-${{ hashFiles( '**/run.log' ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -69,7 +69,7 @@ jobs:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
           #key: ${{ env.cacheName }}-${{ github.run_id }}
-          key: ${{ env.cacheName }}-${{ hashFiles( env.cacheKey ) }}
+          key: ${{ env.cacheName }}-${{ hashFiles( '**/run.log' ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -102,7 +102,7 @@ jobs:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
           #key: ${{ env.cacheName }}-${{ github.run_id }}
-          key: ${{ env.cacheName }}-${{ hashFiles( env.cacheKey ) }}
+          key: ${{ env.cacheName }}-${{ hashFiles( '**/run.log' ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
