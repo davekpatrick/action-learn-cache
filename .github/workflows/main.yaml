@@ -14,6 +14,7 @@ on:
 env:
   cacheName: my-cache
   cacheFile: run.log
+  cacheKey: format( '**/{0}/{1}', env.cacheName, env.cacheFile )
 #
 jobs:
   preparation:
@@ -29,7 +30,7 @@ jobs:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
           #key: ${{ env.cacheName }}-${{ github.run_id }}
-          key: ${{ env.cacheName }}-${{ hashFiles( format( '**/{0}/{1}', env.cacheName, env.cacheFile ) ) }}
+          key: ${{ env.cacheName }}-${{ hashFiles( env.cacheKey ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -46,10 +47,11 @@ jobs:
             touch ${{ github.run_id }}
           fi
           echo runID:[${{ github.run_id }}][preparation] >> ${{ env.cacheFile }}
-          ## 
+      ## ---------------------------------------------------
+      - name: Debug
+        run: |
           ls -la
-          set 
-          ##
+          set
   construction:
     runs-on: ubuntu-latest
     needs: preparation
@@ -64,7 +66,7 @@ jobs:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
           #key: ${{ env.cacheName }}-${{ github.run_id }}
-          key: ${{ env.cacheName }}-${{ hashFiles( format( '**/{0}/{1}', env.cacheName, env.cacheFile ) ) }}
+          key: ${{ env.cacheName }}-${{ hashFiles( env.cacheKey ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -74,9 +76,12 @@ jobs:
           ## 
           cd ${{ env.cacheName }}
           cat ${{ env.cacheFile }}
+          ##
+      ## ---------------------------------------------------
+      - name: Debug
+        run: |
           ls -la
-          set 
-          ## 
+          set
   testing:
     runs-on: ubuntu-latest
     needs: construction
@@ -91,7 +96,7 @@ jobs:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
           #key: ${{ env.cacheName }}-${{ github.run_id }}
-          key: ${{ env.cacheName }}-${{ hashFiles( format( '**/{0}/{1}', env.cacheName, env.cacheFile ) ) }}
+          key: ${{ env.cacheName }}-${{ hashFiles( env.cacheKey ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
