@@ -2,6 +2,13 @@ on:
   push:
     branches:    
       - main
+  workflow_dispatch:
+     inputs:
+       addRunId:
+         description: 'Add run_id file to cache'
+         required: true
+         type: boolean
+         default: true
 
 env:
   cacheName: my-cache
@@ -28,7 +35,10 @@ jobs:
             mkdir ${{ env.cacheName }}
           fi
           cd ${{ env.cacheName }}
-          touch ${{ github.run_id }}
+          echo "addRunId[${{ inputs.addRunId }}]"
+          if [ ${{ inputs.addRunId }} -eq 1 ]; then 
+            touch ${{ github.run_id }}
+          fi
           ls -la
       ## ---------------------------------------------------
       - name: Run greeting
