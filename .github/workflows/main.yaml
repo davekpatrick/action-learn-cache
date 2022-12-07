@@ -27,7 +27,8 @@ jobs:
         with:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
-          key: ${{ env.cacheName }}-${{ github.run_id }}
+          #key: ${{ env.cacheName }}-${{ github.run_id }}
+          key: ${{ env.cacheName }}-${{ hashFiles( env.cacheName/* ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -43,6 +44,7 @@ jobs:
           if [ "${{ inputs.addRunId }}" = 'true' ]; then 
             touch ${{ github.run_id }}
           fi
+          echo runID:[${{ github.run_id }}][preparation] >> run.log
           ## 
           ls -la
           set 
@@ -60,7 +62,8 @@ jobs:
         with:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
-          key: ${{ env.cacheName }}-${{ github.run_id }}
+          #key: ${{ env.cacheName }}-${{ github.run_id }}
+          key: ${{ env.cacheName }}-${{ hashFiles( env.cacheName/* ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -69,6 +72,7 @@ jobs:
           echo "addRunId[${{ inputs.addRunId }}]"
           ## 
           cd ${{ env.cacheName }}
+          cat run.log
           ls -la
           set 
           ## 
@@ -85,7 +89,8 @@ jobs:
         with:
           path: ${{ env.cacheName }}
           # Note: The cache is immutable and cannot be updated once created.
-          key: ${{ env.cacheName }}-${{ github.run_id }}
+          #key: ${{ env.cacheName }}-${{ github.run_id }}
+          key: ${{ env.cacheName }}-${{ hashFiles( env.cacheName/* ) }}
           restore-keys: |
             ${{ env.cacheName }}
       ## ---------------------------------------------------
@@ -94,6 +99,16 @@ jobs:
         uses: davekpatrick/action-learn-helloworld@main
         with:
           greetingType: 'Hello'
+      ## ---------------------------------------------------
       # Use the output from the action
       - name: Print greeting
         run: echo "${{ steps.hello.outputs.greetingMessage }}"
+      ## ---------------------------------------------------
+      - name: Test cache
+        run: |
+          echo "addRunId[${{ inputs.addRunId }}]"
+          ## 
+          cd ${{ env.cacheName }}
+          echo runID:[${{ github.run_id }}][testing] >> run.log
+          cat run.log
+          ## 
