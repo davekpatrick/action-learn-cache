@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Workflow preparation
     env:
-      cacheKey: '**/my-cache/run.log'
+      cacheKey: '**/run.log'
     steps:
       ## ---------------------------------------------------
       - name: Init Cache
@@ -58,7 +58,7 @@ jobs:
     needs: preparation
     name: Artifact construction
     env:
-      cacheKey: '**/my-cache/run.log'
+      cacheKey: '**/run.log'
     steps:
       ## ---------------------------------------------------
       - name: Init Cache
@@ -78,6 +78,7 @@ jobs:
           echo "addRunId[${{ inputs.addRunId }}]"
           ## 
           cd ${{ env.cacheName }}
+          echo runID:[${{ github.run_id }}][construction] >> ${{ env.cacheFile }}
           cat ${{ env.cacheFile }}
           ##
       ## ---------------------------------------------------
@@ -90,7 +91,7 @@ jobs:
     needs: construction
     name: Artifact testing
     env:
-      cacheKey: '**/my-cache/run.log'
+      cacheKey: '**/run.log'
     steps:
       ## ---------------------------------------------------
       - name: Init Cache
