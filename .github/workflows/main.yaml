@@ -22,6 +22,7 @@ jobs:
     name: Workflow preparation
     env: 
       TERRAFORM_VERSION: 1.3.3
+      cacheKeyHashFile: ${{ env.TERRAFORM_CODE_PATH }}/.terraform.lock.hcls
     steps:
       ## ---------------------------------------------------
       - uses: actions/checkout@v3
@@ -32,6 +33,12 @@ jobs:
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
       ## ---------------------------------------------------
+      - name: Terraform initialization
+        id: terraform-init
+        run: |
+          cd ${{ env.TERRAFORM_CODE_PATH }}
+          terraform init
+      ## ---------------------------------------------------
       - name: Terraform install validataion
         id: terraform-install-validate
         run: |
@@ -40,16 +47,8 @@ jobs:
           set
           terraform version
       ## ---------------------------------------------------
-      - name: Terraform initialization
-        id: terraform-init
-        run: |
-          cd ${{ env.TERRAFORM_CODE_PATH }}
-          terraform init
-      ## ---------------------------------------------------
       - name: Cache setup
         id: cache
-        env:
-          cacheKeyHashFile: ${{ env.TERRAFORM_CODE_PATH }}/.terraform.lock.hcls
         # src: 
         uses: actions/cache@v3
         with:
