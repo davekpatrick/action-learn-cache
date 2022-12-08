@@ -12,18 +12,20 @@ on:
          default: true
 #
 env:
-  TERRAFORM_CODE_PATH: ./terraform
-  cacheKeyHashFile: '**/.terraform.lock.hcl'
-  #
   TF_IN_AUTOMATION: true
+  TERRAFORM_CODE_PATH: ./terraform
+  TERRAFORM_VERSION: 1.3.3
 #
 jobs:
   preparation:
     runs-on: ubuntu-latest
     name: Workflow preparation
-    env: 
-      TERRAFORM_VERSION: 1.3.3
     steps:
+      ## ---------------------------------------------------
+      - name: Base setup
+        id: setup
+        run: |
+          echo "NOW=$(/bin/date -u "+%Y%m%d%h%m%s")" >> $GITHUB_OUTPUT
       ## ---------------------------------------------------
       - uses: actions/checkout@v3
       ## ---------------------------------------------------
@@ -55,8 +57,9 @@ jobs:
           path: |
             ${{ env.TERRAFORM_CODE_PATH }}/.terraform
           # Note: The cache is immutable and cannot be updated once created.
-          key: ${{ runner.os }}-terraform-providers-${{ hashFiles( env.cacheKeyHashFile ) }}
+          key: ${{ runner.os }}-terraform-providers-${{ github.run_id }}-${{ steps.setup.outputs.NOW }}
           restore-keys: |
+            ${{ runner.os }}-terraform-providers-${{ github.run_id }}
             ${{ runner.os }}-terraform-providers
       ## ---------------------------------------------------
       - name: Debug
@@ -70,20 +73,24 @@ jobs:
     name: Artifact construction
     steps:
       ## ---------------------------------------------------
+      - name: Base setup
+        id: setup
+        run: |
+          echo "NOW=$(/bin/date -u "+%Y%m%d%h%m%s")" >> $GITHUB_OUTPUT
+      ## ---------------------------------------------------
       - uses: actions/checkout@v3
       ## ---------------------------------------------------
       - name: Cache setup
         id: cache
-        env:
-          cacheKeyHashFile: ${{ env.TERRAFORM_CODE_PATH }}/.terraform.lock.hcls
         # src: 
         uses: actions/cache@v3
         with:
           path: |
             ${{ env.TERRAFORM_CODE_PATH }}/.terraform
           # Note: The cache is immutable and cannot be updated once created.
-          key: ${{ runner.os }}-terraform-providers-${{ hashFiles( env.cacheKeyHashFile ) }}
+          key: ${{ runner.os }}-terraform-providers-${{ github.run_id }}-${{ steps.setup.outputs.NOW }}
           restore-keys: |
+            ${{ runner.os }}-terraform-providers-${{ github.run_id }}
             ${{ runner.os }}-terraform-providers
       ## ---------------------------------------------------
       - name: Test cache
@@ -96,20 +103,24 @@ jobs:
     name: Artifact testing
     steps:
       ## ---------------------------------------------------
+      - name: Base setup
+        id: setup
+        run: |
+          echo "NOW=$(/bin/date -u "+%Y%m%d%h%m%s")" >> $GITHUB_OUTPUT
+      ## ---------------------------------------------------
       - uses: actions/checkout@v3
-       ## ---------------------------------------------------
+      ## ---------------------------------------------------
       - name: Cache setup
         id: cache
-        env:
-          cacheKeyHashFile: ${{ env.TERRAFORM_CODE_PATH }}/.terraform.lock.hcls
         # src: 
         uses: actions/cache@v3
         with:
           path: |
             ${{ env.TERRAFORM_CODE_PATH }}/.terraform
           # Note: The cache is immutable and cannot be updated once created.
-          key: ${{ runner.os }}-terraform-providers-${{ hashFiles( env.cacheKeyHashFile ) }}
+          key: ${{ runner.os }}-terraform-providers-${{ github.run_id }}-${{ steps.setup.outputs.NOW }}
           restore-keys: |
+            ${{ runner.os }}-terraform-providers-${{ github.run_id }}
             ${{ runner.os }}-terraform-providers
       ## ---------------------------------------------------
       - name: Test cache
