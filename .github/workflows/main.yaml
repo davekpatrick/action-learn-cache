@@ -22,7 +22,7 @@ jobs:
     name: Workflow preparation
     env: 
       TERRAFORM_VERSION: 1.3.3
-      cacheKeyHashFile: ${{ env.TERRAFORM_CODE_PATH }}/.terraform.lock.hcls
+      cacheKeyHashFile: '**/.terraform.lock.hcl'
     steps:
       ## ---------------------------------------------------
       - uses: actions/checkout@v3
