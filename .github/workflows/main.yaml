@@ -106,7 +106,7 @@ jobs:
           path: |
             ${{ env.TERRAFORM_CODE_PATH }}/.terraform
           # Note: The cache is immutable and cannot be updated once created.
-          key: ${{ runner.os }}-${{ github.ref_name }}-terraform-provider-${{ github.run_id }}  
+          key: ${{ runner.os }}-${{ github.ref_name }}-terraform-provider-${{ github.run_id }}
       ## ---------------------------------------------------
       - name: Debug
         run: |
