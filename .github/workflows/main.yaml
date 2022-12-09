@@ -57,8 +57,7 @@ jobs:
           cd ${{ env.TERRAFORM_CODE_PATH }}
           terraform init
       ## ---------------------------------------------------
-      - name: Terraform install validataion
-        id: terraform-install-validate
+      - name: debug
         run: |
           pwd
           find .
@@ -72,6 +71,7 @@ jobs:
         with:
           path: |
             ${{ env.TERRAFORM_CODE_PATH }}/.terraform
+            ${{ env.TERRAFORM_CODE_PATH }}/.terraform.lock.hcl
           # Note: The cache is immutable and cannot be updated once created.
           key: ${{ runner.os }}-${{ github.ref_name }}-terraform-provider-${{ github.run_id }}
       ## ---------------------------------------------------
