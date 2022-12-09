@@ -80,6 +80,7 @@ jobs:
           cd ${{ env.TERRAFORM_CODE_PATH }}
           ls -laR
           set
+          sleep 30
   validation:
     runs-on: ubuntu-latest
     needs: preparation
