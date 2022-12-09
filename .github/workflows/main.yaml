@@ -43,12 +43,13 @@ jobs:
         id: terraform-install
         if: steps.cache-terraform-cli.outputs.cache-hit != 'true'
         run: |
+          cd ${{ env.TERRAFORM_CODE_PATH }}
           curl --silent \
             --location \
             --request GET \
             --output terraform.zip \
             --url "https://releases.hashicorp.com/terraform/${{ env.TERRAFORM_VERSION }}/terraform_${{ env.TERRAFORM_VERSION }}_linux_amd64.zip"
-          unzip terraform.zip
+          unzip terraform.zip -d ./
       ## ---------------------------------------------------
       - name: Terraform initialization
         id: terraform-init
